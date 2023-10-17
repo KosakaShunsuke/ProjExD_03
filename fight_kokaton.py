@@ -92,7 +92,6 @@ class Beam:
         引数 bird：こうかとんインスタンス（Birdクラスのインスタンス）
         """
         self.img = pg.image.load(f"ex03/fig/beam.png")
-        self.img1 = pg.transform.rotozoom(pg.image.load(f"ex03/fig/beam.png"), 0, 5.0)
         self.rct = self.img.get_rect()
         self.rct.left = bird.rct.right  # こうかとんの右横座標
         self.rct.centery = bird.rct.centery  # こうかとんの中心縦座標
@@ -104,7 +103,7 @@ class Beam:
         引数 screen：画面Surface
         """
         self.rct.move_ip(self.vx, self.vy)
-        screen.blit(self.img1, self.rct)        
+        screen.blit(self.img, self.rct)        
 
 
 class Bomb:
@@ -142,6 +141,22 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+
+    #スコア表示
+
+    def __init__(self):
+        self.score  = 0
+        self.font = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体",30)
+        self.img = self.font.render(f"スコア：{self.score}",0,(0,0,255))
+        self.rct = self.img.get_rect()
+        self.rct.center = (100,850)
+
+    def update(self,screen: pg.Surface):
+        self.img = self.font.render(f"スコア：{self.score}",0,(0,0,255))
+        screen.blit(self.img,self.rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -149,7 +164,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
-
+    score = Score()
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -177,10 +192,13 @@ def main():
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen)
+                    score.score += 1
                     pg.display.update()
+                
         bombs = [bomb for bomb in bombs if bomb is not None]                        
 
         key_lst = pg.key.get_pressed()
+        score.update(screen)
         bird.update(key_lst, screen)
         for bomb in bombs:
             bomb.update(screen)
