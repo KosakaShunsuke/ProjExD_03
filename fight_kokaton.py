@@ -146,11 +146,11 @@ class Score:
     #スコア表示
 
     def __init__(self):
-        self.score  = 0
+        self.score = 0
         self.font = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体",30)
         self.img = self.font.render(f"スコア：{self.score}",0,(0,0,255))
         self.rct = self.img.get_rect()
-        self.rct.center = (100,850)
+        self.rct.center = (100,HEIGHT-50)
 
     def update(self,screen: pg.Surface):
         self.img = self.font.render(f"スコア：{self.score}",0,(0,0,255))
@@ -174,10 +174,7 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # キーが押されたら，かつ，キーの種類がスペースキーだったら
                 beam = Beam(bird)
-
-        
         screen.blit(bg_img, [0, 0])
-        
         for bomb in bombs:
             if bird.rct.colliderect(bomb.rct):
                 # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
@@ -193,10 +190,8 @@ def main():
                     bombs[i] = None
                     bird.change_img(6, screen)
                     score.score += 1
-                    pg.display.update()
-                
+                    pg.display.update()        
         bombs = [bomb for bomb in bombs if bomb is not None]                        
-
         key_lst = pg.key.get_pressed()
         score.update(screen)
         bird.update(key_lst, screen)
